@@ -1,13 +1,21 @@
 # readme
 
-## prepare
+## merge
 
-make sure to create folder "input" in this folder, and put "ready to merge excel files" under "input folder" in subfolder.
+make sure to create folder "to_merge" in this folder, and put directories under "to_merge" folder
 
 ```sh
 pip install -r requirements.txt
 
 python merge.py
+```
+
+## sum
+
+make sure to create folder "to_sum" in this folder, and put "sample.xlsx" under "to_sum" folder.
+
+```sh
+python sum.py
 ```
 
 ## reference link

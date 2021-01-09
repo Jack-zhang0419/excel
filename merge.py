@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from file_util import sub_dirs, filter_excel_files
 
 
 def merge(sub_dir):
@@ -14,10 +15,11 @@ def merge(sub_dir):
     # 找到文件路径下的所有表格名称，返回列表
     new_list = []
 
-    filter_list = [x for x in os.listdir(sub_dir) if x != 'merged.xlsx']
+    # filter_list = [x for x in os.listdir(sub_dir) if x != 'merged.xlsx']
+    filter_list = filter_excel_files(sub_dir)
 
     for file in filter_list:
-        if file.endswith('.xls') or file.endswith('.xlsx'):
+        if not file.endswith('merged.xlsx'):
             # 重构文件路径
             file_path = os.path.join(sub_dir, file)
             # 将excel转换成DataFrame
@@ -34,10 +36,10 @@ def merge(sub_dir):
 
 
 def main():
-    inputFolder = f"{os.getcwd()}/input/"
+    inputFolder = f"{os.getcwd()}/to_merge/"
     # print(inputFolder)
-    subdirs = []
-    for subdir in [x[0] for x in os.walk(inputFolder) if x[0] != inputFolder]:
+    subdirs = sub_dirs(inputFolder)
+    for subdir in subdirs:
         merge(subdir)
 
 
