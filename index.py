@@ -6,10 +6,12 @@ def create_tasks():
     tasks = []
 
     sum = Sum("to_sum")
-    tasks.append(sum)
+    if sum.is_valid_task():
+        tasks.append(sum)
 
     merge = Merge("to_merge")
-    tasks.append(merge)
+    if merge.is_valid_task():
+        tasks.append(merge)
 
     return tasks
 

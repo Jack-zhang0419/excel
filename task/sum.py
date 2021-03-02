@@ -11,9 +11,6 @@ class Sum(ITask):
     group_column_name = "name"
     excel_file = "sample.xlsx"
 
-    # def __init__(self, dir):
-    #     super(ITask, self).__init__(dir)
-
     def run(self):
         print(
             '================================================================')

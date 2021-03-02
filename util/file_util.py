@@ -1,4 +1,5 @@
 import os
+from pathlib import PurePath
 
 
 def sub_dirs(dir):
@@ -12,12 +13,8 @@ def filter_excel_files(dir):
     """
     return *.xls or *.xlsx files in dir
     """
-    excel_files = []
 
-    file_list = [x for x in os.listdir(dir)]
-
-    for file in file_list:
-        if file.endswith('.xls') or file.endswith('.xlsx'):
-            excel_files.append(file)
-
-    return excel_files
+    return [
+        x for x in os.listdir(dir)
+        if PurePath(x).match('*.xls') or PurePath(x).match('*.xlsx')
+    ]

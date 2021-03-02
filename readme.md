@@ -2,6 +2,8 @@
 
 ## prerequisites
 
+install [python 3.x](https://www.python.org/) on your operating system.
+
 ```sh
 pip install -r requirements.txt
 ```
@@ -12,12 +14,12 @@ make sure to create folder "to_merge" in the root folder, and put directories un
 
 ## sum
 
-make sure to create folder "to_sum" in this folder, and put "sample.xlsx" under "to_sum" folder, such as "to_sum\sample.xls"
+make sure to create folder "to_sum" in this folder, and put "sample.xlsx" under "to_sum" folder, such as "to_sum\sample.xls or sample.xlsx"
 
 ## how to run
 
 ```sh
-python index.html
+python index.py
 ```
 
 ## reference link
