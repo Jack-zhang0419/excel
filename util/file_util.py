@@ -13,8 +13,9 @@ def filter_excel_files(dir):
     """
     return *.xls or *.xlsx files in dir
     """
-
-    return [
+    file_list = [
         x for x in os.listdir(dir)
         if PurePath(x).match('*.xls') or PurePath(x).match('*.xlsx')
     ]
+
+    return [x for x in file_list if '~$' not in x]
