@@ -1,17 +1,14 @@
 from task.merge import Merge
 from task.sum import Sum
+from task.merge_ab import MergeAB
 
 
 def create_tasks():
     tasks = []
 
-    sum = Sum("to_sum")
-    if sum.is_valid_task():
-        tasks.append(sum)
-
-    merge = Merge("to_merge")
-    if merge.is_valid_task():
-        tasks.append(merge)
+    # tasks.append(Sum("to_sum"))
+    # tasks.append(Merge("to_merge"))
+    tasks.append(MergeAB("to_merge_AB"))
 
     return tasks
 
@@ -23,7 +20,8 @@ def main():
     tasks = create_tasks()
 
     for task in tasks:
-        task.run()
+        if task.is_valid_task():
+            task.run()
 
 
 if __name__ == "__main__":
