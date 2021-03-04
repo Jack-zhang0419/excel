@@ -10,6 +10,7 @@ from copy import copy
 import os
 
 # https://openpyxl.readthedocs.io/en/stable/_modules/openpyxl/worksheet/cell_range.html?highlight=CellRange#
+SHEET_NAME = ["学校层面", "专业群层面"]
 
 
 class MergeAB(ITask):
@@ -38,8 +39,8 @@ class MergeAB(ITask):
         # 构建新的表格名称
         merged_file = f"{folder}/{self.output_file}"
         self.target_workbook = workbook.Workbook()
-        self.target_workbook.active.title = "学校层面"
-        self.target_workbook.create_sheet(title="专业群层面")
+        self.target_workbook.active.title = SHEET_NAME[0]
+        self.target_workbook.create_sheet(title=SHEET_NAME[1])
         self.target_cur_row = [1, 1]
 
         filter_list = filter_excel_files(folder)
@@ -53,30 +54,35 @@ class MergeAB(ITask):
             self.source_workbook = load_workbook(
                 filename=os.path.join(folder, file_name))
 
-            # source_sheet = self.source_workbook.worksheets[source_sheet_no]
-            # copier = WorksheetCopy(source_sheet, self.target_workbook.active)
-            # copier.copy_worksheet()
-
-            # continue
             (copied_range, column_range,
              source_row_range) = self.copy_excel_block(source_sheet_no,
                                                        source_block_no)
+            current_last_row = source_row_range[1] - source_row_range[
+                0] + self.target_cur_row[target_sheet_no]
 
-            self.paste_range(
-                1, self.target_cur_row[target_sheet_no], column_range,
-                source_row_range[1] - source_row_range[0] +
-                self.target_cur_row[target_sheet_no],
-                self.target_workbook.worksheets[target_sheet_no], copied_range)
+            self.paste_range(1, self.target_cur_row[target_sheet_no],
+                             column_range, current_last_row,
+                             self.target_workbook.worksheets[target_sheet_no],
+                             copied_range)
 
             # handle worksheet level
-            # self.target_workbook.worksheets[
-            #     target_sheet_no].sheet_format = copy(
-            #         self.source_workbook.worksheets[source_sheet_no].
-            #         sheet_format)
-            # self.target_workbook.worksheets[
-            #     target_sheet_no].sheet_properties = copy(
-            #         self.source_workbook.worksheets[source_sheet_no].
-            #         sheet_properties)
+            self.target_workbook.worksheets[
+                target_sheet_no].sheet_format = copy(
+                    self.source_workbook.worksheets[source_sheet_no].
+                    sheet_format)
+            self.target_workbook.worksheets[
+                target_sheet_no].sheet_properties = copy(
+                    self.source_workbook.worksheets[source_sheet_no].
+                    sheet_properties)
+            for attr in ('row_dimensions', 'column_dimensions'):
+                src = getattr(self.source_workbook.worksheets[source_sheet_no],
+                              attr)
+                target = getattr(
+                    self.target_workbook.worksheets[target_sheet_no], attr)
+                for key, dim in src.items():
+                    target[key] = copy(dim)
+                    target[key].worksheet = self.target_workbook.worksheets[
+                        target_sheet_no]
 
             # handle merged_cells
             source_block_area = CellRange(
@@ -95,6 +101,8 @@ class MergeAB(ITask):
                     self.target_workbook.worksheets[
                         target_sheet_no].merge_cells(cr.coord)
 
+            self.target_cur_row[target_sheet_no] = current_last_row + 1
+            self.source_workbook = None
         self.target_workbook.save(merged_file)
 
     def parse_excel_name(self, file_name):
@@ -146,7 +154,7 @@ class MergeAB(ITask):
             self.source_workbook.worksheets[source_sheet_no], source_block_no)
 
         return (self.copy_range(
-            row_range[0], 1, column_range, row_range[1],
+            1, row_range[0], column_range, row_range[1],
             self.source_workbook.worksheets[source_sheet_no]), column_range,
                 row_range)
 
@@ -182,6 +190,7 @@ class MergeAB(ITask):
                 target_cell.value = source_cell.value
 
                 if source_cell.has_style:
+                    # target_cell.style = source_cell.style
                     target_cell.font = copy(source_cell.font)
                     target_cell.border = copy(source_cell.border)
                     target_cell.fill = copy(source_cell.fill)
