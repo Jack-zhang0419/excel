@@ -1,6 +1,6 @@
 from task.merge import Merge
 from task.sum import Sum
-from task.merge_ab import MergeAB
+from task.combine import Combine
 
 
 def create_tasks():
@@ -8,7 +8,7 @@ def create_tasks():
 
     # tasks.append(Sum("to_sum"))
     # tasks.append(Merge("to_merge"))
-    tasks.append(MergeAB("to_merge_AB"))
+    tasks.append(Combine("to_merge_AB"))
 
     return tasks
 

@@ -11,11 +11,12 @@ def sub_dirs(dir):
 
 def filter_excel_files(dir):
     """
-    return *.xls or *.xlsx files in dir
+    return *.xls or *.xlsx but opening (started with ~$) files in dir
     """
     file_list = [
         x for x in os.listdir(dir)
         if PurePath(x).match('*.xls') or PurePath(x).match('*.xlsx')
     ]
 
+    # filter out opening files
     return [x for x in file_list if '~$' not in x]

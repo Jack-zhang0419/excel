@@ -1,5 +1,19 @@
 from copy import copy
 from openpyxl.worksheet.worksheet import Worksheet
+from openpyxl.styles import Border, Side, PatternFill, Font, GradientFill, Alignment
+
+BLOCK_COLOR = {
+    0: "00CCFF",
+    1: "CCFFFF",
+    2: "CCFFCC",
+    3: "FFFF99",
+    4: "99CCFF",
+    5: "FF99CC",
+    6: "CC99FF",
+    7: "FFCC99",
+    8: "3366FF",
+    9: "33CCCC"
+}
 
 
 # https://openpyxl.readthedocs.io/en/stable/_modules/openpyxl/worksheet/copier.html
@@ -21,8 +35,13 @@ def copy_range(start_column: int, start_row: int, end_column: int,
 
 
 # Paste range to target worksheet include data and styles
-def paste_range(start_column: int, start_row: int, end_column: int,
-                end_row: int, target_cells, source_cells):
+def paste_range(start_column: int,
+                start_row: int,
+                end_column: int,
+                end_row: int,
+                target_cells,
+                source_cells,
+                block_no=1):
     count_row = 0
 
     for i in range(start_row, end_row + 1, 1):
@@ -39,10 +58,17 @@ def paste_range(start_column: int, start_row: int, end_column: int,
                 # target_cell.style = source_cell.style
                 target_cell.font = copy(source_cell.font)
                 target_cell.border = copy(source_cell.border)
-                target_cell.fill = copy(source_cell.fill)
+                # target_cell.fill = copy(source_cell.fill)
                 target_cell.number_format = copy(source_cell.number_format)
                 target_cell.protection = copy(source_cell.protection)
                 target_cell.alignment = copy(source_cell.alignment)
+                target_cell.fill = PatternFill("solid",
+                                               fgColor=BLOCK_COLOR.get(
+                                                   block_no % 9))
+                # if block_no % 2 == 1:
+                #     target_cell.fill = PatternFill("solid", fgColor="DDDDDD")
+                # else:
+                #     target_cell.fill = PatternFill("solid", fgColor="EEEEEE")
 
             if source_cell.hyperlink:
                 target_cell._hyperlink = copy(source_cell.hyperlink)
