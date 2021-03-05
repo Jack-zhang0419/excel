@@ -17,6 +17,7 @@ class TargetExcel(object):
         # because two sheets, each one start from row 1
         self.start_rows = [1, 1]
         self.start_column = 1
+        self.block_nos = [0, 0]
 
     def save(self):
         self.workbook.save(self.saved_file_path)
@@ -24,15 +25,22 @@ class TargetExcel(object):
     def set_start_row(self):
         self.start_rows[self.sheet_no] = self.end_row + 1
 
+    def increase_block_no(self):
+        self.block_nos[self.sheet_no] += 1
+
     def switch_sheet(self, sheet_no: int):
         self.sheet_no = sheet_no
         self.worksheet = self.workbook.worksheets[self.sheet_no]
 
     def paste_excel_block(self, start_column, start_row, end_column, end_row,
-                          copied_range, block_no):
+                          copied_range):
         self.end_row = self.start_rows[self.sheet_no] + end_row - start_row
         paste_range(start_column, self.start_rows[self.sheet_no], end_column,
-                    self.end_row, self.worksheet, copied_range, block_no)
+                    self.end_row, self.worksheet, copied_range,
+                    self.block_nos[self.sheet_no])
+        print(
+            f"target block {self.block_nos[self.sheet_no]} row range: A{self.start_rows[self.sheet_no]}:A{self.end_row}"
+        )
 
     # https://openpyxl.readthedocs.io/en/stable/_modules/openpyxl/worksheet/cell_range.html?highlight=CellRange#
     def paste_merged_cell_range(self, source_start_row: int,

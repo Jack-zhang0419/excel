@@ -1,11 +1,10 @@
 from copy import copy
 from openpyxl.worksheet.worksheet import Worksheet
-from openpyxl.styles import Border, Side, PatternFill, Font, GradientFill, Alignment
+from openpyxl.styles import PatternFill
 from combine_configure import *
 
+
 # https://openpyxl.readthedocs.io/en/stable/styles.html
-
-
 # https://openpyxl.readthedocs.io/en/stable/_modules/openpyxl/worksheet/copier.html
 # Copy range of cells as a nested list
 # Takes: start cell, end cell, and sheet you want to copy from.
@@ -25,13 +24,8 @@ def copy_range(start_column: int, start_row: int, end_column: int,
 
 
 # Paste range to target worksheet include data and styles
-def paste_range(start_column: int,
-                start_row: int,
-                end_column: int,
-                end_row: int,
-                target_cells,
-                source_cells,
-                block_no=1):
+def paste_range(start_column: int, start_row: int, end_column: int,
+                end_row: int, target_cells, source_cells, block_no):
     count_row = 0
 
     for i in range(start_row, end_row + 1, 1):
@@ -52,33 +46,21 @@ def paste_range(start_column: int,
                 target_cell.number_format = copy(source_cell.number_format)
                 target_cell.protection = copy(source_cell.protection)
                 target_cell.alignment = copy(source_cell.alignment)
-                target_cell.fill = PatternFill("solid",
-                                               fgColor=BLOCK_COLOR.get(
-                                                   block_no % 10))
-                # if block_no % 2 == 1:
-                #     target_cell.fill = PatternFill("solid", fgColor="DDDDDD")
-                # else:
-                #     target_cell.fill = PatternFill("solid", fgColor="EEEEEE")
+
+                if block_no == 0:
+                    target_cell.fill = PatternFill("solid",
+                                                   fgColor=HEADER_COLOR)
+                else:
+                    target_cell.fill = PatternFill(
+                        "solid",
+                        fgColor=BLOCK_COLOR.get(block_no %
+                                                len(BLOCK_COLOR.keys())))
 
             if source_cell.hyperlink:
                 target_cell._hyperlink = copy(source_cell.hyperlink)
 
             if source_cell.comment:
                 target_cell.comment = copy(source_cell.comment)
-
-            # thin = Side(border_style="thin", color="000000")
-            # double = Side(border_style="double", color="ff0000")
-
-            # target_cell.border = Border(top=thin,
-            #                             left=thin,
-            #                             right=thin,
-            #                             bottom=thin)
-            # target_cell.fill = PatternFill("solid", fgColor="DDDDDD")
-            # target_cell.fill = fill = GradientFill(stop=("000000",
-            #                                              "FFFFFF"))
-            # target_cell.font = Font(b=True, color="FF0000")
-            # target_cell.alignment = Alignment(horizontal="center",
-            #                                   vertical="center")
 
             count_column += 1
         count_row += 1

@@ -47,8 +47,7 @@ class Combine(ITask):
                                       source_block_no)
 
             print(f"copy/paste data and style of excel block range")
-            self.target.paste_excel_block(*self.source.copy_excel_block(),
-                                          source_block_no)
+            self.target.paste_excel_block(*self.source.copy_excel_block())
             print(f"copy/paste merged cell range of excel block range")
             self.target.paste_merged_cell_range(
                 *self.source.get_merged_cell_range())
@@ -61,6 +60,7 @@ class Combine(ITask):
                 worksheet_level_set[target_sheet_no] = True
 
             self.target.set_start_row()
+            self.target.increase_block_no()
             self.source = None
 
         self.target.save()

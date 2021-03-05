@@ -25,15 +25,6 @@ SHEET_COLUMN_WIDTH = [{
     "J": 25
 }]
 
-BLOCK_COLOR = {
-    0: "00CCFF",  # header color
-    1: "CCFFFF",
-    2: "CCFFCC",
-    3: "FFFF99",
-    4: "99CCFF",
-    5: "FF99CC",
-    6: "CC99FF",
-    7: "FFCC99",
-    8: "3366FF",
-    9: "33CCCC"
-}
+HEADER_COLOR = "C0C0C0"
+
+BLOCK_COLOR = {0: "99CCFF", 1: "FFFFFF"}

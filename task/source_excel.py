@@ -33,7 +33,7 @@ class SourceExcel(object):
         self.end_row = row_block_bound[3]
 
         print(
-            f"block {self.block_no} row range: A{self.start_row}:A{self.end_row}"
+            f"source block {self.block_no} row range: A{self.start_row}:A{self.end_row}"
         )
 
     def _calculate_column_range_(self):
