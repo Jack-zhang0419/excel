@@ -1,19 +1,9 @@
 from copy import copy
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.styles import Border, Side, PatternFill, Font, GradientFill, Alignment
+from combine_configure import *
 
-BLOCK_COLOR = {
-    0: "00CCFF",  # header color
-    1: "CCFFFF",
-    2: "CCFFCC",
-    3: "FFFF99",
-    4: "99CCFF",
-    5: "FF99CC",
-    6: "CC99FF",
-    7: "FFCC99",
-    8: "3366FF",
-    9: "33CCCC"
-}
+# https://openpyxl.readthedocs.io/en/stable/styles.html
 
 
 # https://openpyxl.readthedocs.io/en/stable/_modules/openpyxl/worksheet/copier.html
