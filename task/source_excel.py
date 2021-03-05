@@ -31,9 +31,6 @@ class SourceExcel(object):
         row_block_bound = bounds[self.block_no]
         self.start_row = row_block_bound[1]
         self.end_row = row_block_bound[3]
-        # if self.block_no == 1:
-        #     # if first block, then include headers
-        #     self.start_row = 1
 
         print(
             f"block {self.block_no} row range: A{self.start_row}:A{self.end_row}"

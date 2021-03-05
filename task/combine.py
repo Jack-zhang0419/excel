@@ -33,6 +33,8 @@ class Combine(ITask):
             filter_list.remove(self.output_file)
         sorted_list = sorted(filter_list)
 
+        worksheet_level_set = [False, False]
+
         for file_name in sorted_list:
             print(f"--------- start {file_name} ---------")
             source_sheet_no, source_block_no, target_sheet_no, target_block_no = self.parse_excel_name(
@@ -52,9 +54,11 @@ class Combine(ITask):
                 *self.source.get_merged_cell_range())
 
             # only do once
-            if source_block_no == 1:
+            if worksheet_level_set[target_sheet_no] is False:
                 print(f"do worksheet level setting: {target_sheet_no}")
                 self.target.set_worksheet_dimensions()
+
+                worksheet_level_set[target_sheet_no] = True
 
             self.target.set_start_row()
             self.source = None
