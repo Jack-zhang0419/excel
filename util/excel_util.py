@@ -3,7 +3,7 @@ from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.styles import Border, Side, PatternFill, Font, GradientFill, Alignment
 
 BLOCK_COLOR = {
-    0: "00CCFF",
+    0: "00CCFF",  # header color
     1: "CCFFFF",
     2: "CCFFCC",
     3: "FFFF99",
@@ -64,7 +64,7 @@ def paste_range(start_column: int,
                 target_cell.alignment = copy(source_cell.alignment)
                 target_cell.fill = PatternFill("solid",
                                                fgColor=BLOCK_COLOR.get(
-                                                   block_no % 9))
+                                                   block_no % 10))
                 # if block_no % 2 == 1:
                 #     target_cell.fill = PatternFill("solid", fgColor="DDDDDD")
                 # else:
