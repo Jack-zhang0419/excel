@@ -5,8 +5,7 @@ from util.file_util import sub_dirs, filter_excel_files
 from openpyxl import load_workbook, workbook
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.worksheet.copier import WorksheetCopy
-from openpyxl.styles import Border, Side, PatternFill, Font, GradientFill, Alignment
-from copy import copy
+from util.excel_util import copy_range, paste_range
 import os
 
 # https://openpyxl.readthedocs.io/en/stable/_modules/openpyxl/worksheet/cell_range.html?highlight=CellRange#
@@ -51,6 +50,9 @@ class MergeAB(ITask):
         for file_name in sorted_list:
             source_sheet_no, source_block_no, target_sheet_no, target_block_no = self.parse_excel_name(
                 file_name)
+            print(
+                f"current working on source sheet: {source_sheet_no}, source block: {source_block_no}, target sheet: {target_sheet_no}"
+            )
             self.source_workbook = load_workbook(
                 filename=os.path.join(folder, file_name))
 
@@ -60,29 +62,56 @@ class MergeAB(ITask):
             current_last_row = source_row_range[1] - source_row_range[
                 0] + self.target_cur_row[target_sheet_no]
 
-            self.paste_range(1, self.target_cur_row[target_sheet_no],
-                             column_range, current_last_row,
-                             self.target_workbook.worksheets[target_sheet_no],
-                             copied_range)
+            paste_range(1, self.target_cur_row[target_sheet_no], column_range,
+                        current_last_row,
+                        self.target_workbook.worksheets[target_sheet_no],
+                        copied_range)
 
             # handle worksheet level
-            self.target_workbook.worksheets[
-                target_sheet_no].sheet_format = copy(
-                    self.source_workbook.worksheets[source_sheet_no].
-                    sheet_format)
-            self.target_workbook.worksheets[
-                target_sheet_no].sheet_properties = copy(
-                    self.source_workbook.worksheets[source_sheet_no].
-                    sheet_properties)
-            for attr in ('row_dimensions', 'column_dimensions'):
-                src = getattr(self.source_workbook.worksheets[source_sheet_no],
-                              attr)
-                target = getattr(
-                    self.target_workbook.worksheets[target_sheet_no], attr)
-                for key, dim in src.items():
-                    target[key] = copy(dim)
-                    target[key].worksheet = self.target_workbook.worksheets[
-                        target_sheet_no]
+            # self.target_workbook.worksheets[
+            #     target_sheet_no].sheet_format = copy(
+            #         self.source_workbook.worksheets[source_sheet_no].
+            #         sheet_format)
+            # self.target_workbook.worksheets[
+            #     target_sheet_no].sheet_properties = copy(
+            #         self.source_workbook.worksheets[source_sheet_no].
+            #         sheet_properties)
+
+            # only do once
+            if source_block_no == 1:
+                print(f"do worksheet level setting: {target_sheet_no}")
+                self.target_workbook.worksheets[
+                    target_sheet_no].column_dimensions['A'].auto_size = True
+                self.target_workbook.worksheets[
+                    target_sheet_no].column_dimensions['B'].auto_size = True
+                self.target_workbook.worksheets[
+                    target_sheet_no].column_dimensions['C'].auto_size = True
+                self.target_workbook.worksheets[
+                    target_sheet_no].column_dimensions['D'].auto_size = True
+                self.target_workbook.worksheets[
+                    target_sheet_no].column_dimensions['E'].auto_size = True
+                self.target_workbook.worksheets[
+                    target_sheet_no].column_dimensions['F'].auto_size = True
+                self.target_workbook.worksheets[
+                    target_sheet_no].column_dimensions['G'].auto_size = True
+                self.target_workbook.worksheets[
+                    target_sheet_no].column_dimensions['H'].auto_size = True
+                self.target_workbook.worksheets[
+                    target_sheet_no].column_dimensions['I'].auto_size = True
+                self.target_workbook.worksheets[
+                    target_sheet_no].column_dimensions['J'].auto_size = True
+                self.target_workbook.worksheets[
+                    target_sheet_no].column_dimensions['K'].auto_size = True
+                # for attr in ('row_dimensions', 'column_dimensions'):
+                #     src = getattr(
+                #         self.source_workbook.worksheets[source_sheet_no], attr)
+                #     target = getattr(
+                #         self.target_workbook.worksheets[target_sheet_no], attr)
+                #     for key, dim in src.items():
+                #         target[key] = copy(dim)
+                #         target[
+                #             key].worksheet = self.target_workbook.worksheets[
+                #                 target_sheet_no]
 
             # handle merged_cells
             source_block_area = CellRange(
@@ -153,70 +182,6 @@ class MergeAB(ITask):
         row_range = self.get_row_range(
             self.source_workbook.worksheets[source_sheet_no], source_block_no)
 
-        return (self.copy_range(
-            1, row_range[0], column_range, row_range[1],
-            self.source_workbook.worksheets[source_sheet_no]), column_range,
-                row_range)
-
-    # Copy range of cells as a nested list
-    # Takes: start cell, end cell, and sheet you want to copy from.
-    # https://openpyxl.readthedocs.io/en/stable/_modules/openpyxl/worksheet/copier.html
-    def copy_range(self, startCol, startRow, endCol, endRow, sheet):
-        rangeSelected = []
-        # Loops through selected Rows
-        for i in range(startRow, endRow + 1, 1):
-            # Appends the row to a RowSelected list
-            rowSelected = []
-            for j in range(startCol, endCol + 1, 1):
-                rowSelected.append(sheet.cell(row=i, column=j))
-            # Adds the RowSelected List and nests inside the rangeSelected
-            rangeSelected.append(rowSelected)
-
-        return rangeSelected
-
-    # Paste range
-    # Paste data from copyRange into template sheet
-    def paste_range(self, startCol, startRow, endCol, endRow, target_cells,
-                    source_cells):
-        countRow = 0
-
-        for i in range(startRow, endRow + 1, 1):
-            countCol = 0
-            for j in range(startCol, endCol + 1, 1):
-                target_cell = target_cells.cell(row=i, column=j)
-                source_cell = source_cells[countRow][countCol]
-
-                target_cell.data_type = source_cell.data_type
-                target_cell.value = source_cell.value
-
-                if source_cell.has_style:
-                    # target_cell.style = source_cell.style
-                    target_cell.font = copy(source_cell.font)
-                    target_cell.border = copy(source_cell.border)
-                    target_cell.fill = copy(source_cell.fill)
-                    target_cell.number_format = copy(source_cell.number_format)
-                    target_cell.protection = copy(source_cell.protection)
-                    target_cell.alignment = copy(source_cell.alignment)
-
-                if source_cell.hyperlink:
-                    target_cell._hyperlink = copy(source_cell.hyperlink)
-
-                if source_cell.comment:
-                    target_cell.comment = copy(source_cell.comment)
-
-                # thin = Side(border_style="thin", color="000000")
-                # double = Side(border_style="double", color="ff0000")
-
-                # target_cell.border = Border(top=thin,
-                #                             left=thin,
-                #                             right=thin,
-                #                             bottom=thin)
-                # target_cell.fill = PatternFill("solid", fgColor="DDDDDD")
-                # target_cell.fill = fill = GradientFill(stop=("000000",
-                #                                              "FFFFFF"))
-                # target_cell.font = Font(b=True, color="FF0000")
-                # target_cell.alignment = Alignment(horizontal="center",
-                #                                   vertical="center")
-
-                countCol += 1
-            countRow += 1
+        return (copy_range(1, row_range[0], column_range, row_range[1],
+                           self.source_workbook.worksheets[source_sheet_no]),
+                column_range, row_range)
