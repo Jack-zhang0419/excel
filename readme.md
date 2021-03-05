@@ -10,11 +10,21 @@ pip install -r requirements.txt
 
 ## merge
 
-make sure to create folder "to_merge" in the root folder, and put directories under "to_merge" folder, such as "to_merge\1" or "to_merge\2"
+make sure to create folder "to_merge" in the root folder, and put directories under "to_merge" folder
+
+such as "to_merge\1" or "to_merge\2"
 
 ## sum
 
-make sure to create folder "to_sum" in this folder, and put "sample.xlsx" under "to_sum" folder, such as "to_sum\sample.xls or sample.xlsx"
+make sure to create folder "to_sum" in this folder, and put "sample.xlsx" under "to_sum" folder
+
+such as "to_sum\sample.xls or sample.xlsx"
+
+## combine
+
+create folder "to_combine" in the root folder
+
+copy "A0-A9.xlsx" "B0-B9.xlsx" to "to_combine" folder
 
 ## how to run
 

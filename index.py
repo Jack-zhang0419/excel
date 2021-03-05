@@ -8,7 +8,7 @@ def create_tasks():
 
     # tasks.append(Sum("to_sum"))
     # tasks.append(Merge("to_merge"))
-    tasks.append(Combine("to_merge_AB"))
+    tasks.append(Combine("to_combine"))
 
     return tasks
 
