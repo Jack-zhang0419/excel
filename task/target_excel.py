@@ -1,3 +1,4 @@
+from copy import copy
 from openpyxl import load_workbook, workbook
 from openpyxl.worksheet.cell_range import CellRange
 from openpyxl.worksheet.merge import MergedCellRange
@@ -11,8 +12,8 @@ class TargetExcel(object):
         self.saved_file_path = saved_file_path
 
         self.workbook = workbook.Workbook()
-        self.workbook.active.title = SHEET_NAME[0]
-        self.workbook.create_sheet(title=SHEET_NAME[1])
+        # self.workbook.active.title = SHEET_NAME[0]
+        self.workbook.create_sheet()
 
         # because two sheets, each one start from row 1
         self.start_rows = [1, 1]
@@ -53,19 +54,23 @@ class TargetExcel(object):
                          source_start_row)
                 self.worksheet.merge_cells(cr.coord)
 
-    def set_worksheet_dimensions(self):
+    def set_worksheet_column_dimensions(self, src):
         # https://openpyxl.readthedocs.io/en/stable/api/openpyxl.worksheet.dimensions.html#openpyxl.worksheet.dimensions.ColumnDimension.width
-        column_widths = SHEET_COLUMN_WIDTH[self.sheet_no]
-        for key in column_widths:
-            self.worksheet.column_dimensions[key].width = column_widths[key]
+        # column_widths = SHEET_COLUMN_WIDTH[self.sheet_no]
+        # for key in column_widths:
+        #     self.worksheet.column_dimensions[key].width = column_widths[key]
+
+        target = getattr(self.worksheet, 'column_dimensions')
+        for key, dim in src.items():
+            target[key].width = dim.width
 
         # for attr in ('row_dimensions', 'column_dimensions'):
-        #     src = getattr(
-        #         self.source_workbook.worksheets[source_sheet_no], attr)
-        #     target = getattr(
-        #         self.target_workbook.worksheets[target_sheet_no], attr)
-        #     for key, dim in src.items():
-        #         target[key] = copy(dim)
-        #         target[
-        #             key].worksheet = self.target_workbook.worksheets[
-        #                 target_sheet_no]
+        #     src = getattr(self.source_workbook.worksheets[self.sheet_no], attr)
+        #     print(src)
+        # target = getattr(
+        #     self.target_workbook.worksheets[target_sheet_no], attr)
+        # for key, dim in src.items():
+        #     target[key] = copy(dim)
+        #     target[
+        #         key].worksheet = self.target_workbook.worksheets[
+        #             target_sheet_no]

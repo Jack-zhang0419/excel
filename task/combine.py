@@ -37,7 +37,7 @@ class Combine(ITask):
 
         for file_name in sorted_list:
             print(f"--------- start {file_name} ---------")
-            source_sheet_no, source_block_no, target_sheet_no, target_block_no = self.parse_excel_name(
+            source_sheet_no, source_block_no, target_sheet_no = self.parse_excel_name(
                 file_name)
             print(
                 f"working on source sheet: {source_sheet_no}, source block: {source_block_no}, target sheet: {target_sheet_no}"
@@ -45,25 +45,29 @@ class Combine(ITask):
             self.target.switch_sheet(target_sheet_no)
             self.source = SourceExcel(folder, file_name, source_sheet_no,
                                       source_block_no)
-
-            print(f"copy/paste data and style of excel block range")
-            self.target.paste_excel_block(*self.source.copy_excel_block())
-            print(f"copy/paste merged cell range of excel block range")
-            self.target.paste_merged_cell_range(
-                *self.source.get_merged_cell_range())
-
-            # only do once
+            # only do once per sheet
             if worksheet_level_set[target_sheet_no] is False:
-                print(f"do worksheet level setting: {target_sheet_no}")
-                self.target.set_worksheet_dimensions()
+                print(f"do worksheet level setting once: {target_sheet_no}")
+                self.target.set_worksheet_column_dimensions(
+                    self.source.get_column_dimensions())
+                self.target.worksheet.title = self.source.worksheet.title
 
                 worksheet_level_set[target_sheet_no] = True
+
+            print(f"copy/paste data and style of block range")
+            self.target.paste_excel_block(*self.source.copy_excel_block())
+            print(f"copy/paste merged cell range of block range")
+            self.target.paste_merged_cell_range(
+                *self.source.get_merged_cell_range())
 
             self.target.set_start_row()
             self.target.increase_block_no()
             self.source = None
 
         self.target.save()
+        print(
+            '================================================================')
+        print("Done")
 
     def parse_excel_name(self, file_name):
         current_file_name = file_name.split(".")[0]
@@ -71,7 +75,7 @@ class Combine(ITask):
             source_sheet_no = target_sheet_no = 0
         else:
             source_sheet_no = target_sheet_no = 1
-        source_block_no = target_block_no = int(current_file_name[1])
+        source_block_no = int(current_file_name[1])
 
         if "-" in current_file_name:
             source_block_no = int(current_file_name[-1])
@@ -80,5 +84,4 @@ class Combine(ITask):
             else:
                 source_sheet_no = 1
 
-        return (source_sheet_no, source_block_no, target_sheet_no,
-                target_block_no)
+        return (source_sheet_no, source_block_no, target_sheet_no)

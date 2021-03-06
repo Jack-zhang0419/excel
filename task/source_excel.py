@@ -36,7 +36,7 @@ class SourceExcel(object):
             f"source block {self.block_no} row range: A{self.start_row}:A{self.end_row}"
         )
 
-    def _calculate_column_range_(self):
+    def calculate_column_range(self):
         self.start_column = 1
         self.end_column = 0
         while type(self.worksheet.cell(
@@ -51,7 +51,7 @@ class SourceExcel(object):
 
     def copy_excel_block(self):
         self._calculate_row_range_()
-        self._calculate_column_range_()
+        self.calculate_column_range()
 
         copied_range = copy_range(self.start_column, self.start_row,
                                   self.end_column, self.end_row,
@@ -64,3 +64,6 @@ class SourceExcel(object):
                                min_row=self.start_row,
                                max_row=self.end_row)
         return self.start_row, block_area, self.worksheet.merged_cell_ranges
+
+    def get_column_dimensions(self):
+        return getattr(self.worksheet, 'column_dimensions')

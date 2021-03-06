@@ -47,10 +47,10 @@ def paste_range(start_column: int, start_row: int, end_column: int,
                 target_cell.protection = copy(source_cell.protection)
                 target_cell.alignment = copy(source_cell.alignment)
 
-                if block_no == 0:
+                if block_no == 0 and HEADER_COLOR:
                     target_cell.fill = PatternFill("solid",
                                                    fgColor=HEADER_COLOR)
-                else:
+                if block_no != 0 and len(BLOCK_COLOR.keys()) > 0:
                     target_cell.fill = PatternFill(
                         "solid",
                         fgColor=BLOCK_COLOR.get(block_no %
