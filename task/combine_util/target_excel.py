@@ -61,9 +61,6 @@ class TargetExcel(object):
 
     def set_worksheet_column_dimensions(self, src):
         # https://openpyxl.readthedocs.io/en/stable/api/openpyxl.worksheet.dimensions.html#openpyxl.worksheet.dimensions.ColumnDimension.width
-        # column_widths = SHEET_COLUMN_WIDTH[self.sheet_no]
-        # for key in column_widths:
-        #     self.worksheet.column_dimensions[key].width = column_widths[key]
 
         target = getattr(self.worksheet, 'column_dimensions')
         for key, dim in src.items():
@@ -80,3 +77,13 @@ class TargetExcel(object):
         #     target[
         #         key].worksheet = self.target_workbook.worksheets[
         #             target_sheet_no]
+
+    def set_row_dimensions(self, src, source_start_row):
+        target = self.worksheet.row_dimensions
+        target_start_row = self.start_rows[self.sheet_no]
+        target_end_row = self.end_row
+
+        for i in range(target_start_row, target_end_row + 1, 1):
+            # print(f"row {source_start_row}: {src[source_start_row].height}")
+            target[i].height = src[source_start_row].height
+            source_start_row += 1

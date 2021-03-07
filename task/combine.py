@@ -56,12 +56,14 @@ class Combine(ITask):
 
             print(f"copy/paste data and style of block range")
             self.target.paste_excel_block(*self.source.copy_excel_block())
+            self.target.set_row_dimensions(*self.source.get_row_dimensions())
             print(f"copy/paste merged cell range of block range")
             self.target.paste_merged_cell_range(
                 *self.source.get_merged_cell_range())
 
             self.target.set_start_row()
             self.target.increase_block_no()
+
             self.source = None
 
         self.target.save()

@@ -67,3 +67,6 @@ class SourceExcel(object):
 
     def get_column_dimensions(self):
         return getattr(self.worksheet, 'column_dimensions')
+
+    def get_row_dimensions(self):
+        return self.worksheet.row_dimensions, self.start_row
