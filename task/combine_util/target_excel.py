@@ -2,7 +2,7 @@ from copy import copy
 from openpyxl import load_workbook, workbook
 from openpyxl.worksheet.cell_range import CellRange
 from openpyxl.worksheet.merge import MergedCellRange
-from util.excel_util import paste_range
+from task.combine_util.excel_util import paste_range
 from combine_configure import *
 
 
@@ -12,13 +12,13 @@ class TargetExcel(object):
         self.saved_file_path = saved_file_path
 
         self.workbook = workbook.Workbook()
-        # self.workbook.active.title = SHEET_NAME[0]
-        self.workbook.create_sheet()
+        # self.workbook.create_sheet()
 
-        # because two sheets, each one start from row 1
-        self.start_rows = [1, 1]
-        self.start_column = 1
-        self.block_nos = [0, 0]
+        self.sheet_no = 0
+        self.start_column = 1  # all the start_column is 1
+        self.start_rows = [1]
+        self.block_nos = [0]
+        self.worksheet_level_set = [False]
 
     def save(self):
         self.workbook.save(self.saved_file_path)
@@ -31,6 +31,11 @@ class TargetExcel(object):
 
     def switch_sheet(self, sheet_no: int):
         self.sheet_no = sheet_no
+        while len(self.workbook.worksheets) <= self.sheet_no:
+            self.workbook.create_sheet()
+            self.start_rows.append(1)
+            self.block_nos.append(1)
+            self.worksheet_level_set.append(False)
         self.worksheet = self.workbook.worksheets[self.sheet_no]
 
     def paste_excel_block(self, start_column, start_row, end_column, end_row,
@@ -62,6 +67,7 @@ class TargetExcel(object):
 
         target = getattr(self.worksheet, 'column_dimensions')
         for key, dim in src.items():
+            # print(key, dim.width)
             target[key].width = dim.width
 
         # for attr in ('row_dimensions', 'column_dimensions'):

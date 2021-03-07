@@ -42,14 +42,17 @@ def paste_range(start_column: int, start_row: int, end_column: int,
                 # target_cell.style = source_cell.style
                 target_cell.font = copy(source_cell.font)
                 target_cell.border = copy(source_cell.border)
-                # target_cell.fill = copy(source_cell.fill)
                 target_cell.number_format = copy(source_cell.number_format)
                 target_cell.protection = copy(source_cell.protection)
                 target_cell.alignment = copy(source_cell.alignment)
 
-                if block_no == 0 and HEADER_COLOR:
-                    target_cell.fill = PatternFill("solid",
-                                                   fgColor=HEADER_COLOR)
+                # if master excel, then take the style of header of master
+                # if BLOCK_COLOR set, then take BLOCK_COLOR
+                if block_no == 0:
+                    target_cell.fill = copy(source_cell.fill)
+                    if HEADER_COLOR:
+                        target_cell.fill = PatternFill("solid",
+                                                       fgColor=HEADER_COLOR)
                 if block_no != 0 and len(BLOCK_COLOR.keys()) > 0:
                     target_cell.fill = PatternFill(
                         "solid",

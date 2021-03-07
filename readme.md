@@ -32,6 +32,14 @@ copy "A0-A9.xlsx" "B0-B9.xlsx" to "to_combine" folder
 python index.py
 ```
 
+## future features
+
+- excel file name supports more than 9, such as A010 or A10
+- support more than two sheets, such as C1
+- support not merged column type in first column
+- performance enhancements:
+  - only load column range once
+
 ## reference link
 
 - [python合并多个EXCEL表](https://www.jianshu.com/p/664b52d6933e)

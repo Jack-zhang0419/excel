@@ -1,6 +1,7 @@
 from task.merge import Merge
 from task.sum import Sum
 from task.combine import Combine
+from task.combine_util.name_parser import _parse_file_name_, parse_file_names
 
 
 def create_tasks():

@@ -2,7 +2,7 @@ import os
 
 from openpyxl import load_workbook, workbook
 from openpyxl.worksheet.cell_range import CellRange
-from util.excel_util import copy_range
+from task.combine_util.excel_util import copy_range
 
 
 class SourceExcel(object):
