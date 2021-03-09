@@ -38,7 +38,12 @@ class SourceExcel(object):
             current_cell = self.worksheet.cell(row=end_row_no, column=1)
 
         self.row_range.append((start_row_no, end_row_no - 1))
-        self.start_row, self.end_row = self.row_range[self.block_no]
+
+        if self.block_no == -1:
+            self.start_row = self.row_range[1][0]
+            self.end_row = self.row_range[-1][1]
+        else:
+            self.start_row, self.end_row = self.row_range[self.block_no]
         print(
             f"source block {self.block_no} row range: A{self.start_row}:A{self.end_row}"
         )
