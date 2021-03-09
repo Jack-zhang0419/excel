@@ -54,6 +54,7 @@ class Combine(ITask):
 
                 self.target.worksheet_level_set[target_sheet_no] = True
 
+            # self.source.calculate_row_range()
             print(f"copy/paste data and style of block range")
             self.target.paste_excel_block(*self.source.copy_excel_block())
             self.target.set_row_dimensions(*self.source.get_row_dimensions())
@@ -70,41 +71,3 @@ class Combine(ITask):
         print(
             '================================================================')
         print("Done")
-
-    def parse_excel_name(self, file_name):
-        # remove ext
-        current_file_name = file_name.split(".")[0]
-
-        if current_file_name[0] == "A":
-            source_sheet_no = target_sheet_no = 0
-        else:
-            source_sheet_no = target_sheet_no = 1
-        source_block_no = int(current_file_name[1])
-
-        if "-" in current_file_name:
-            source_block_no = int(current_file_name[-1])
-            if current_file_name[-2] == "A":
-                source_sheet_no = 0
-            else:
-                source_sheet_no = 1
-
-        return (source_sheet_no, source_block_no, target_sheet_no)
-
-    def parse_file_name(self, file_name):
-        # remove ext
-        current_file_name = file_name.split(".")[0]
-
-        if current_file_name[0] == "A":
-            source_sheet_no = target_sheet_no = 0
-        else:
-            source_sheet_no = target_sheet_no = 1
-        source_block_no = int(current_file_name[1])
-
-        if "-" in current_file_name:
-            source_block_no = int(current_file_name[-1])
-            if current_file_name[-2] == "A":
-                source_sheet_no = 0
-            else:
-                source_sheet_no = 1
-
-        return (source_sheet_no, source_block_no, target_sheet_no)

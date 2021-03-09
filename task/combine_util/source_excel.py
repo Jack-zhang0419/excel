@@ -21,17 +21,24 @@ class SourceExcel(object):
         self.worksheet = None
         self.workbook = None
 
-    # get row range
-    def _calculate_row_range_(self):
-        bounds = sorted([
-            merged_range.bounds
-            for merged_range in self.worksheet.merged_cells.ranges
-            if merged_range.bounds[0] == 1
-        ])
-        row_block_bound = bounds[self.block_no]
-        self.start_row = row_block_bound[1]
-        self.end_row = row_block_bound[3]
+    def calculate_row_range(self):
+        self.row_range = []
 
+        start_row_no = 1
+        end_row_no = 2
+        current_cell = self.worksheet.cell(row=end_row_no, column=1)
+        while type(
+                current_cell
+        ).__name__ == 'MergedCell' or current_cell.value is not None:
+            if current_cell.value is not None:
+                self.row_range.append((start_row_no, end_row_no - 1))
+                start_row_no = end_row_no
+
+            end_row_no += 1
+            current_cell = self.worksheet.cell(row=end_row_no, column=1)
+
+        self.row_range.append((start_row_no, end_row_no - 1))
+        self.start_row, self.end_row = self.row_range[self.block_no]
         print(
             f"source block {self.block_no} row range: A{self.start_row}:A{self.end_row}"
         )
@@ -50,7 +57,7 @@ class SourceExcel(object):
         )
 
     def copy_excel_block(self):
-        self._calculate_row_range_()
+        self.calculate_row_range()
         self.calculate_column_range()
 
         copied_range = copy_range(self.start_column, self.start_row,

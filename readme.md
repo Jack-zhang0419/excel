@@ -43,4 +43,5 @@ python index.py
 ## reference link
 
 - [python合并多个EXCEL表](https://www.jianshu.com/p/664b52d6933e)
-- [合并excel重复行](https://www.jianshu.com/p/26f93146d564)>
+- [合并excel重复行](https://www.jianshu.com/p/26f93146d564)
+- [openpyxl](https://openpyxl.readthedocs.io/en/stable/index.html)
