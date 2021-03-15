@@ -51,10 +51,12 @@ class SourceExcel(object):
     def calculate_column_range(self):
         self.start_column = 1
         self.end_column = 0
+        start_calcuate_row = 1
         while type(self.worksheet.cell(
                 row=1, column=self.end_column +
                 1)).__name__ == 'MergedCell' or self.worksheet.cell(
-                    row=1, column=self.end_column + 1).value is not None:
+                    row=start_calcuate_row,
+                    column=self.end_column + 1).value is not None:
             self.end_column = self.end_column + 1
 
         print(

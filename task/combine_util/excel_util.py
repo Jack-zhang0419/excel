@@ -1,5 +1,6 @@
 from copy import copy
 from openpyxl.worksheet.worksheet import Worksheet
+from openpyxl.cell import Cell
 from openpyxl.styles import PatternFill
 from combine_configure import *
 
@@ -23,6 +24,12 @@ def copy_range(start_column: int, start_row: int, end_column: int,
     return range_selected
 
 
+def bind_value(target: Cell, source: Cell):
+    # print(f"trying to bind correct data_type and value: {source.value}")
+    target._bind_value(source.value)
+    # print(f"binded data_type: {target.data_type}")
+
+
 # Paste range to target worksheet include data and styles
 def paste_range(start_column: int, start_row: int, end_column: int,
                 end_row: int, target_cells, source_cells, block_no):
@@ -36,6 +43,13 @@ def paste_range(start_column: int, start_row: int, end_column: int,
 
             target_cell.data_type = source_cell.data_type
             target_cell.value = source_cell.value
+
+            if source_cell.data_type == 'n' and source_cell.value is not None:
+                # try to bind correct data_type if data_type is n
+                try:
+                    bind_value(target_cell, source_cell)
+                except Exception as error:
+                    print(f"warning: cannot identify cell data_type: {error}")
 
             if source_cell.has_style:
                 # commented because probably the style include operating system related properties, such as '常规' font data_type

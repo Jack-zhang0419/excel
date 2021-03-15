@@ -54,7 +54,6 @@ class Combine(ITask):
 
                 self.target.worksheet_level_set[target_sheet_no] = True
 
-            # self.source.calculate_row_range()
             print(f"copy/paste data and style of block range")
             self.target.paste_excel_block(*self.source.copy_excel_block())
             self.target.set_row_dimensions(*self.source.get_row_dimensions())
