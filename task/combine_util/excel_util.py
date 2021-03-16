@@ -3,6 +3,7 @@ from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell import Cell
 from openpyxl.styles import PatternFill
 from combine_configure import *
+from datetime import datetime, timedelta
 
 
 # https://openpyxl.readthedocs.io/en/stable/styles.html
@@ -25,9 +26,14 @@ def copy_range(start_column: int, start_row: int, end_column: int,
 
 
 def bind_value(target: Cell, source: Cell):
-    # print(f"trying to bind correct data_type and value: {source.value}")
-    target._bind_value(source.value)
-    # print(f"binded data_type: {target.data_type}")
+
+    if type(source.value) == int and int(source.value) > 44000:
+        print(f"trying to convert number to date: {source.value}")
+        converted_value = from_excel_ordinal(int(source.value))
+        # target._bind_value(converted_value.strftime("%Y/%m/%d"))
+        target.data_type = 's'
+        target._value = converted_value.strftime("%Y/%m/%d")
+        # target.number_format = 'yyyy/mm/dd'
 
 
 # Paste range to target worksheet include data and styles
@@ -41,6 +47,7 @@ def paste_range(start_column: int, start_row: int, end_column: int,
             target_cell = target_cells.cell(row=i, column=j)
             source_cell = source_cells[count_row][count_column]
 
+            target_cell.number_format = source_cell.number_format
             target_cell.data_type = source_cell.data_type
             target_cell.value = source_cell.value
 
@@ -48,8 +55,14 @@ def paste_range(start_column: int, start_row: int, end_column: int,
                 # try to bind correct data_type if data_type is n
                 try:
                     bind_value(target_cell, source_cell)
+                    # print(f"target_cell.data_type: {target_cell.data_type}")
                 except Exception as error:
                     print(f"warning: cannot identify cell data_type: {error}")
+
+            # if j == 9:
+            #     print(
+            #         f"{source_cell.data_type} {source_cell.number_format} {source_cell.value}"
+            #     )
 
             if source_cell.has_style:
                 # commented because probably the style include operating system related properties, such as '常规' font data_type
@@ -81,3 +94,9 @@ def paste_range(start_column: int, start_row: int, end_column: int,
 
             count_column += 1
         count_row += 1
+
+
+def from_excel_ordinal(ordinal, _epoch0=datetime(1899, 12, 31)):
+    if ordinal >= 60:
+        ordinal -= 1  # Excel leap year bug, 1900 is not a leap year!
+    return (_epoch0 + timedelta(days=ordinal)).replace(microsecond=0)
