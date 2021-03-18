@@ -139,3 +139,4 @@ cython_debug/
 to_*
 test.py
 /**/.DS_Store
+*.pdf

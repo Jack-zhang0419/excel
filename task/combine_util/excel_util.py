@@ -2,7 +2,7 @@ from copy import copy
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell import Cell
 from openpyxl.styles import PatternFill
-from combine_configure import *
+from task.combine_util.configure import *
 from datetime import datetime, timedelta
 
 
@@ -32,7 +32,7 @@ def bind_value(target: Cell, source: Cell):
         converted_value = from_excel_ordinal(int(source.value))
         # target._bind_value(converted_value.strftime("%Y/%m/%d"))
         target.data_type = 's'
-        target._value = converted_value.strftime("%Y/%m/%d")
+        target._value = converted_value.strftime("%Y/%m")
         # target.number_format = 'yyyy/mm/dd'
 
 
@@ -74,17 +74,16 @@ def paste_range(start_column: int, start_row: int, end_column: int,
                 target_cell.alignment = copy(source_cell.alignment)
 
                 # if master excel, then take the style of header of master
-                # if BLOCK_COLOR set, then take BLOCK_COLOR
+                # if BLOCK_COLORS set, then take BLOCK_COLORS
                 if block_no == 0:
                     target_cell.fill = copy(source_cell.fill)
                     if HEADER_COLOR:
                         target_cell.fill = PatternFill("solid",
                                                        fgColor=HEADER_COLOR)
-                if block_no != 0 and len(BLOCK_COLOR.keys()) > 0:
+                if block_no != 0 and len(BLOCK_COLORS) > 0:
+                    block_color_index = block_no % len(BLOCK_COLORS)
                     target_cell.fill = PatternFill(
-                        "solid",
-                        fgColor=BLOCK_COLOR.get(block_no %
-                                                len(BLOCK_COLOR.keys())))
+                        "solid", fgColor=BLOCK_COLORS[block_color_index])
 
             if source_cell.hyperlink:
                 target_cell._hyperlink = copy(source_cell.hyperlink)

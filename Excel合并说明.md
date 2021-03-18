@@ -6,7 +6,7 @@
 - 安装依赖包:
 
 ```cmd
-@REM 这行是注释：请cd到当前目录，例如: cd merge-excel-master
+@REM 请cd到当前目录，例如: cd merge-excel-master
 
 pip install -r requirements.txt
 ```

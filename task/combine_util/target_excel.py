@@ -3,16 +3,16 @@ from openpyxl import load_workbook, workbook
 from openpyxl.worksheet.cell_range import CellRange
 from openpyxl.worksheet.merge import MergedCellRange
 from task.combine_util.excel_util import paste_range
-from combine_configure import *
 
 
 class TargetExcel(object):
-    """docstring for TargetExcel."""
+    """
+    TargetExcel is the excel going to generate with the copied data from SourceExcel
+    """
     def __init__(self, saved_file_path):
         self.saved_file_path = saved_file_path
 
         self.workbook = workbook.Workbook()
-        # self.workbook.create_sheet()
 
         self.sheet_no = 0
         self.start_column = 1  # all the start_column is 1
@@ -64,19 +64,7 @@ class TargetExcel(object):
 
         target = getattr(self.worksheet, 'column_dimensions')
         for key, dim in src.items():
-            # print(key, dim.width)
             target[key].width = dim.width
-
-        # for attr in ('row_dimensions', 'column_dimensions'):
-        #     src = getattr(self.source_workbook.worksheets[self.sheet_no], attr)
-        #     print(src)
-        # target = getattr(
-        #     self.target_workbook.worksheets[target_sheet_no], attr)
-        # for key, dim in src.items():
-        #     target[key] = copy(dim)
-        #     target[
-        #         key].worksheet = self.target_workbook.worksheets[
-        #             target_sheet_no]
 
     def set_row_dimensions(self, src, source_start_row):
         target = self.worksheet.row_dimensions
@@ -84,6 +72,5 @@ class TargetExcel(object):
         target_end_row = self.end_row
 
         for i in range(target_start_row, target_end_row + 1, 1):
-            # print(f"row {source_start_row}: {src[source_start_row].height}")
             target[i].height = src[source_start_row].height
             source_start_row += 1
