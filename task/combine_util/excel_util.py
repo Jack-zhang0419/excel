@@ -25,15 +25,19 @@ def copy_range(start_column: int, start_row: int, end_column: int,
     return range_selected
 
 
-def bind_value(target: Cell, source: Cell):
-
-    if type(source.value) == int and int(source.value) > 44000:
-        print(f"trying to convert number to date: {source.value}")
-        converted_value = from_excel_ordinal(int(source.value))
-        # target._bind_value(converted_value.strftime("%Y/%m/%d"))
-        target.data_type = 's'
-        target._value = converted_value.strftime("%Y/%m")
-        # target.number_format = 'yyyy/mm/dd'
+def apply_column_type(target: Cell, source: Cell, column_type):
+    if column_type["source_data_type"] == source.data_type and type(
+            source.value).__name__ == column_type["source_value_type"]:
+        if column_type["target_data_type"] == "d":
+            converted_value = from_excel_ordinal(int(source.value))
+            print(
+                f"trying to convert column value {source.value} to date: {converted_value}"
+            )
+            target.data_type = 's'
+            target._value = converted_value.strftime("yyyy/mm/dd")
+            if "target_number_format" in column_type:
+                target._value = converted_value.strftime(
+                    column_type["target_number_format"])
 
 
 # Paste range to target worksheet include data and styles
@@ -51,18 +55,16 @@ def paste_range(start_column: int, start_row: int, end_column: int,
             target_cell.data_type = source_cell.data_type
             target_cell.value = source_cell.value
 
-            if source_cell.data_type == 'n' and source_cell.value is not None:
-                # try to bind correct data_type if data_type is n
-                try:
-                    bind_value(target_cell, source_cell)
-                    # print(f"target_cell.data_type: {target_cell.data_type}")
-                except Exception as error:
-                    print(f"warning: cannot identify cell data_type: {error}")
-
-            # if j == 9:
-            #     print(
-            #         f"{source_cell.data_type} {source_cell.number_format} {source_cell.value}"
-            #     )
+            if source_cell.value is not None:
+                column_type = defined_column_type(j)
+                if column_type:
+                    try:
+                        apply_column_type(target_cell, source_cell,
+                                          column_type)
+                    except Exception as error:
+                        print(
+                            f"warning: cannot convert cell to column type: {type(error)} {error}"
+                        )
 
             if source_cell.has_style:
                 # commented because probably the style include operating system related properties, such as '常规' font data_type

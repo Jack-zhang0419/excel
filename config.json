@@ -1,4 +1,13 @@
 {
   "header_color": "FFFFFF",
-  "block_colors": ["99CCFF", "FFFFFF"]
+  "block_colors": ["99CCFF", "FFFFFF"],
+  "column_types": [
+    {
+      "column_number": 9,
+      "source_data_type": "n",
+      "source_value_type": "int",
+      "target_data_type": "d",
+      "target_number_format": "%Y.%m"
+    }
+  ]
 }
