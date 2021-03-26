@@ -18,7 +18,7 @@ GitHub地址：[这里](https://github.com/neoxie/merge-excel)
 输入是这样的：
 ![merge_list](_images/merge_list.png)
 ![before_merge](_images/before_merge.png)
-输入希望是这样的：
+输出希望是这样的：
 ![after_merge](_images/after_merge.png)
 引入超级pandas库，几行代码就能搞定，代码可以在[这里](https://github.com/neoxie/merge-excel/blob/master/task/merge.py)
 核心代码如下：
